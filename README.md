@@ -29,6 +29,20 @@
 * testing the mic:
   * `arecord --device=hw:1,0 --format S32_LE -V mono -c 4 test.wav` - record
   * `aplay test.wav` - play
+  * tip: these commands can be piped as well `arecord | aplay`
+* `alsamixer` - adjust the volume
+
+### sound card setup
+
+mic doesn't work by default, two options:
+
+* uninstall pulseaudio
+* update defaults to correct card
+  ```
+    # cat /etc/pulse/default.pa
+    load-module module-alsa-sink device=hw:0,0
+    load-module module-alsa-source device=hw:0,0
+  ```
 
 ### snips setup
 
@@ -37,3 +51,11 @@
 ### utils
 
 * `sudo raspi-config` - alter Pi config
+
+### extra
+
+* lights support for ReSpeaker
+
+```
+sudo apt-get install portaudio19-dev
+```
