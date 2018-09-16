@@ -1,3 +1,5 @@
+pulseaudio - audio proxy
+
 [Wiki](https://wiki.archlinux.org/index.php/PulseAudio)
 
 ## config (`/etc/pulse/default.pa`)

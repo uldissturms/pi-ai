@@ -25,3 +25,8 @@ make
 ### start receiver
 
 `./shairport.pl -a [name]`
+
+
+### sync project
+
+https://github.com/mikebrady/shairport-sync
