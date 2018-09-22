@@ -1,0 +1,5 @@
+#!/usr/bin/pulseaudio -nF
+
+load-module module-alsa-source device=capture
+load-module module-alsa-sink device=playback
+load-module module-combine-sink

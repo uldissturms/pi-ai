@@ -28,3 +28,8 @@ note: siteId is required
 
   example: `mosquitto_sub -t 'hermes/intent/uldis:talk_to_bot'
   {"sessionId":"3191e707-dc70-45a5-80ba-8250872e38fc","customData":null,"siteId":"default","input":"talk to bot","intent":{"intentName":"uldis:talk_to_bot","probability":1.0},"slots":[{"rawValue":"bot","value":{"kind":"Custom","value":"bot"},"range":{"start":8,"end":11},"entity":"bot","slotName":"bot"}]}`
+
+### troubleshoot
+
+* look in `/var/log/syslog`
+* check `_snips` user groups (audio, pulse-access, etc.)
