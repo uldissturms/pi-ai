@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 import json
 import bot
 
-MQTT_HOST = getenv('MQTT_HOST', 'localhost')
+MQTT_HOST = getenv('MQTT_HOST', 'pi')
 MQTT_PORT = getenv('MQTT_PORT', 1883)
 mqtt_client = mqtt.Client()
 
@@ -24,8 +24,6 @@ slot_name_is = lambda x: lambda s: s['slotName'] == x
 first_slot_value = lambda s: s['value']['value']
 
 CONTINUE_SESSION = 'hermes/dialogueManager/continueSession'
-
-CONTINUE_SESSION_MSG = 'mkay'
 
 def continue_session(id, text, bot_name):
     return json.dumps({
@@ -49,8 +47,7 @@ def on_message(client, _, msg):
         bot_name = first_slot_value(slot)
 
         print('[snips] user wants to talk to {}'.format(bot_name))
-        response = bot.start(bot_name)
-        mqtt_client.publish(
+        on_continue = lambda response: snips_client.publish(
             CONTINUE_SESSION,
             continue_session(
                 sessionId,
@@ -58,6 +55,7 @@ def on_message(client, _, msg):
                 bot_name
             )
         )
+        bot.start(bot_name, on_continue)
     else:
         debug(data)
 
@@ -74,7 +72,7 @@ def debug(data):
 def start():
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = on_message
-    mqtt_client.connect('pi', 1883)
+    mqtt_client.connect(MQTT_HOST, MQTT_PORT)
     mqtt_client.loop_forever()
 
 if __name__ == '__main__':
