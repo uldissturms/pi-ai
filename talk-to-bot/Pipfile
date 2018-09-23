@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 hermes-python = "*"
+paho-mqtt = "*"
+pytest = "*"
 
 [dev-packages]
 

@@ -33,3 +33,9 @@ note: siteId is required
 
 * look in `/var/log/syslog`
 * check `_snips` user groups (audio, pulse-access, etc.)
+
+### links
+
+* [Awesome snips](https://github.com/snipsco/awesome-snips)
+* [MQTT lib for python](https://pypi.org/project/paho-mqtt)
+* [Connect to MQTT](https://snips.gitbook.io/documentation/console/actions/code-your-action/manual-action)

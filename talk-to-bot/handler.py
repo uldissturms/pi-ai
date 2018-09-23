@@ -19,7 +19,9 @@ msg_end='speak soon!'
 def user_request_talk_to_bot(hermes, msg):
     bot=msg.slots.bot.first().value
     print('user wants to talk to {}'.format(bot))
+
     # hermes.publish_continue_session(msg.session_id, msg_start, INTENT_FILTER_CHAT)
+    hermes.publish_continue_session(msg.session_id, msg_start, INTENT_FILTER_CHAT)
 
 def user_quits(hermes, msg):
     print('user wants to quit')
