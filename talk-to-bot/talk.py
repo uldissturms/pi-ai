@@ -1,24 +1,18 @@
-# !/usr/bin/env python
-# encoding: utf-8
+#!/usr/bin/env python
 
 from os import getenv
 import paho.mqtt.client as mqtt
 import json
 import bot
 
-MQTT_HOST = getenv('MQTT_HOST', 'pi')
-MQTT_PORT = getenv('MQTT_PORT', 1883)
-mqtt_client = mqtt.Client()
-
 TALK_TO_BOT = 'uldis:talk_to_bot'
 INTERRUPT = 'uldis:interrupt'
 
 INTENT = TALK_TO_BOT
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(mqtt_client, userdata, flags, rc):
     print('[snips] connected')
-    mqtt_client.subscribe('hermes/intent/{}'.format(INTENT))
-    # mqtt_client.subscribe('hermes/dialogueManager/sessionEnded')
+    mqtt_client.subscribe('hermes/intent/#')
 
 slot_name_is = lambda x: lambda s: s['slotName'] == x
 first_slot_value = lambda s: s['value']['value']
@@ -59,6 +53,9 @@ def on_message(client, _, msg):
     else:
         debug(data)
 
+def on_log(client, userdata, level, buf):
+    print('[snips] {}'.format([client, userdata, level, buf]))
+
 def debug(data):
     slots = data['slots']
     intent_name = data['intent']['intentName']
@@ -70,6 +67,11 @@ def debug(data):
         print('[snips] Slot {} -> \n\tRaw: {} \tValue: {}'.format(slot_name, raw_value, value))
 
 def start():
+    MQTT_HOST = getenv('MQTT_HOST', 'pi')
+    MQTT_PORT = getenv('MQTT_PORT', 1883)
+    mqtt_client = mqtt.Client()
+    if getenv('DEBUG'):
+        mqtt_client.on_log = on_log
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = on_message
     mqtt_client.connect(MQTT_HOST, MQTT_PORT)

@@ -1,3 +1,5 @@
 .DS_Store
 .envrc
 certs
+__pycache__
+bot.pyc
