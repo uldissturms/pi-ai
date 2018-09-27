@@ -42,8 +42,14 @@ def mqtt_client_for(bot_name, getenv=getenv):
 
     ws_url = getenv('{}_MQTT_WS'.format(bot_name_var))
     if ws_url:
-        mqtt_client = mqtt.Client(transport='websockets')
         urlparts = urlparse(ws_url)
+        mqtt_client = mqtt.Client(transport='websockets')
+        headers = {'host': urlparts.netloc}
+        mqtt_client.ws_set_options(
+            path="{}?{}".format(urlparts.path, urlparts.query),
+            headers=headers
+        )
+        mqtt_client.tls_set()
         return [mqtt_client, urlparts.netloc, 443]
 
     host = getenv('{}_MQTT_HOST'.format(bot_name_var))

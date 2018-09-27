@@ -9,7 +9,7 @@ def test_connect_not_configured():
     assert connect(bot_name, None) == None
 
 def test_mqtt_client_for_websockets():
-    def getenv(x):
+    def getenv(x, y=None):
         if x == 'BOT_MQTT_WS':
             return 'ws://some-host'
     [ client, host, port ] = mqtt_client_for(bot_name, getenv)
@@ -18,7 +18,7 @@ def test_mqtt_client_for_websockets():
     assert port == 443
 
 def test_mqtt_client_for_host_and_port():
-    def getenv(x):
+    def getenv(x, y=None):
         if x == 'BOT_MQTT_HOST':
             return 'some-host'
         if x == 'BOT_MQTT_PORT':
