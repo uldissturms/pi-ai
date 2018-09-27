@@ -12,7 +12,7 @@ INTENT = TALK_TO_BOT
 
 def on_connect(mqtt_client, userdata, flags, rc):
     print('[snips] connected')
-    mqtt_client.subscribe('hermes/intent/#')
+    mqtt_client.subscribe('hermes/intent/{}'.format(INTENT))
 
 slot_name_is = lambda x: lambda s: s['slotName'] == x
 first_slot_value = lambda s: s['value']['value']
@@ -28,20 +28,10 @@ def continue_session(id, text, bot_name):
         'sendIntentNotRecognized': False
     })
 
-def on_message(client, _, msg):
-    data = json.loads(msg.payload)
-    intent_name = data['intent']['intentName']
-    sessionId = data['sessionId']
-
-    if (intent_name == TALK_TO_BOT):
-        slot = filter(
-            slot_name_is('bot'),
-            data['slots']
-        )[0]
-        bot_name = first_slot_value(slot)
-
-        print('[snips] user wants to talk to {}'.format(bot_name))
-        on_continue = lambda response: snips_client.publish(
+def on_continue(client, sessionId, bot_name):
+    def inner(response):
+        print('[snips] response from bot:', response)
+        client.publish(
             CONTINUE_SESSION,
             continue_session(
                 sessionId,
@@ -49,7 +39,25 @@ def on_message(client, _, msg):
                 bot_name
             )
         )
-        bot.start(bot_name, on_continue)
+    return inner
+
+def on_message(client, _, msg):
+    data = json.loads(msg.payload)
+    intent_name = data['intent']['intentName']
+    sessionId = data['sessionId']
+
+    if (intent_name == TALK_TO_BOT):
+        slot = next(filter(
+            slot_name_is('bot'),
+            data['slots']
+        ))
+        bot_name = first_slot_value(slot)
+
+        print('[snips] user wants to talk to {}'.format(bot_name))
+        bot.start(
+            bot_name,
+            on_continue(client, sessionId, bot_name)
+        )
     else:
         debug(data)
 

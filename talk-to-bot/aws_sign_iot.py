@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import hmac
 from os import getenv
 from hashlib import sha256

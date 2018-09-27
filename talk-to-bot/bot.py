@@ -3,13 +3,18 @@
 from os import getenv
 import paho.mqtt.client as mqtt
 from urllib.parse import urlparse
+import json
 
 def on_connect(mqtt_client, userdata, flags, rc):
     print('[bot] connected')
     mqtt_client.subscribe(getenv('BOT_MQTT_TOPIC', '#'))
 
-def on_message(client, _, msg):
-    print('[bot] message received {}'.format(msg))
+def on_message(process_response):
+    def inner (client, _, msg):
+        data = json.loads(msg.payload)
+        print('[bot] message received {}'.format(data))
+        process_response(data.message)
+    return inner
 
 def log(x):
     print('[bot] {}'.format(x))
@@ -18,7 +23,7 @@ def log(x):
 def on_log(client, userdata, level, buf):
     log([client, userdata, level, buf])
 
-def connect(bot_name, on_continue):
+def connect(bot_name, process_response):
     [mqtt_client, host, port] = mqtt_client_for(bot_name) or [None, None, None]
 
     if not mqtt_client:
@@ -31,10 +36,9 @@ def connect(bot_name, on_continue):
         mqtt_client.on_log = on_log
 
     mqtt_client.on_connect = on_connect
-    mqtt_client.on_message = on_message
+    mqtt_client.on_message = on_message(process_response)
     mqtt_client.connect(host, port)
 
-    on_continue('bot speaking....')
     mqtt_client.loop_forever()
 
 def mqtt_client_for(bot_name, getenv=getenv):
@@ -44,7 +48,7 @@ def mqtt_client_for(bot_name, getenv=getenv):
     if ws_url:
         urlparts = urlparse(ws_url)
         mqtt_client = mqtt.Client(transport='websockets')
-        headers = {'host': urlparts.netloc}
+        headers = {'Host': urlparts.netloc}
         mqtt_client.ws_set_options(
             path="{}?{}".format(urlparts.path, urlparts.query),
             headers=headers
@@ -61,10 +65,10 @@ def mqtt_client_for(bot_name, getenv=getenv):
 
     return None
 
-def start(bot_name, on_continue, connect=connect):
+def start(bot_name, process_response, connect=connect):
     print('[bot] {} taking over'.format(bot_name))
-    connect(bot_name, on_continue)
+    connect(bot_name, process_response)
 
 if __name__ == '__main__':
     print('[bot] starting...')
-    start('bot', on_continue=lambda x: log(x))
+    start('bot', process_response=lambda x: log(x))
