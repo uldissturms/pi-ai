@@ -10,9 +10,9 @@ INTERRUPT = 'uldis:interrupt'
 
 INTENT = TALK_TO_BOT
 
-def on_connect(mqtt_client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc):
     print('[snips] connected')
-    mqtt_client.subscribe('hermes/intent/{}'.format(INTENT))
+    client.subscribe('hermes/intent/{}'.format(INTENT))
 
 slot_name_is = lambda x: lambda s: s['slotName'] == x
 first_slot_value = lambda s: s['value']['value']
@@ -77,13 +77,13 @@ def debug(data):
 def start():
     MQTT_HOST = getenv('MQTT_HOST', 'pi')
     MQTT_PORT = getenv('MQTT_PORT', 1883)
-    mqtt_client = mqtt.Client()
+    client = mqtt.Client()
     if getenv('DEBUG'):
-        mqtt_client.on_log = on_log
-    mqtt_client.on_connect = on_connect
-    mqtt_client.on_message = on_message
-    mqtt_client.connect(MQTT_HOST, MQTT_PORT)
-    mqtt_client.loop_forever()
+        client.on_log = on_log
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(MQTT_HOST, MQTT_PORT)
+    client.loop_forever()
 
 if __name__ == '__main__':
     print('[snips] starting...')
