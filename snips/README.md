@@ -16,6 +16,15 @@ https://snips.gitbook.io/documentation/console/actions
 
 `apt-get install snips-makers-tts`
 
+### custom ASR and dynamic vocabulary
+
+* https://snips.gitbook.io/documentation/advanced-configuration/asr
+
+```
+apt-get install snips-asr-model-en-500mb # bigger dictionary
+apt-get install -y snips-asr-injection # word injection
+```
+
 ### say something
 
 * `mosquitto_pub -t 'hermes/tts/say' -m '{"text": "hello sir", "siteId": "default"}'` - post to say topic

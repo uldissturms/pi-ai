@@ -1,0 +1,14 @@
+{
+  "operations": [
+    [
+      "add",
+      {
+        "what_to_tell": [
+          "what is my account balance",
+          "what is the weather like",
+          "what time is it"
+        ]
+      }
+    ]
+  ]
+}

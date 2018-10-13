@@ -37,9 +37,10 @@ def connect(bot_name, process_response):
 
     client.on_connect = on_connect
     client.on_message = on_message(process_response)
-    client.connect(host, port)
+    client.connect_async(host, port)
 
-    client.loop_forever()
+    client.loop_start()
+    return client
 
 def mqtt_client_for(bot_name, getenv=getenv):
     bot_name_var = bot_name.upper()
@@ -67,7 +68,7 @@ def mqtt_client_for(bot_name, getenv=getenv):
 
 def start(bot_name, process_response, connect=connect):
     print('[bot] {} taking over'.format(bot_name))
-    connect(bot_name, process_response)
+    return connect(bot_name, process_response)
 
 if __name__ == '__main__':
     print('[bot] starting...')
