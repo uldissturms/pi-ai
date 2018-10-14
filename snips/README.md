@@ -23,6 +23,10 @@ https://snips.gitbook.io/documentation/console/actions
 ```
 apt-get install snips-asr-model-en-500mb # bigger dictionary
 apt-get install -y snips-asr-injection # word injection
+
+# replacing with google ASR
+sudo apt-get -y remove snips-asr
+sudo apt-get -y install snips-asr-google
 ```
 
 ### say something
